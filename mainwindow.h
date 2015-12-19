@@ -97,6 +97,7 @@ private slots:
     void newData(double);
 
 
+    void stopDynamicHurstTriggered();
 private:
     void createActions();
     void createMenus();
@@ -141,6 +142,7 @@ private:
     QAction *quitAct;
     QAction *runHurst;
     QAction *dynamicHurst;
+    QAction *stopDynamicHurst;
 
     QPolygonF dataPoints;
     QPolygonF hurstPoints;
@@ -148,6 +150,8 @@ private:
 
     double timer;
     int topic;
+    QColor *curvColor;
+
 };
 //! [0]
 

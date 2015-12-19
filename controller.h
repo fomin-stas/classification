@@ -49,6 +49,7 @@ public slots:
     void updateHurst();
     void setHurstWindow(int hurstWindow);
 
+    void stopDynamicHurst();
 private:
     QString fileName_csv;
     ReadData *RD;

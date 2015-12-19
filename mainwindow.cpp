@@ -126,6 +126,9 @@ void MainWindow::addHeaderData()
 {
     paragraphsList->addItems(control->headerData());
     topicColumn->addItems(control->headerData());
+    paragraphsList->setCurrentRow(0);
+    dynamicHurst->setEnabled(true);
+    runHurst->setEnabled(true);
 }
 
 void MainWindow::runH()
@@ -136,6 +139,7 @@ void MainWindow::runH()
 
 void MainWindow::dynamicH()
 {
+    dynamicHurst->setEnabled(false);
     timer = 0.0;
     topic = 0;
     dataPoints.clear();
@@ -143,19 +147,27 @@ void MainWindow::dynamicH()
     hurstPoints2.clear();
     hurstCurve = new QwtPlotCurve();
     //hurstCurve->setTitle( "Hurst" + paragraphsList->currentItem()->text() );
-    hurstCurve->setPen( Qt::magenta, 0 ); // цвет и толщина кривой
+    int c = 255 / (paragraphsList->count()+1);
+    int del = paragraphsList->currentRow()%2 == 0?2:1;
+    int del2 = paragraphsList->currentRow()%3 == 0?2:1;
+    int del3 = paragraphsList->currentRow()%4 == 0?2:1;
+    int r = (c * paragraphsList->currentRow())/(del * del2) ;
+    int g = (255 - (c * paragraphsList->currentRow()))/del3;
+    int b = qAbs((c * paragraphsList->currentRow() * 2) - 255);
+    curvColor = new QColor(r,g,b);
+    hurstCurve->setPen( *curvColor, 0 ); // цвет и толщина кривой
     hurstCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // сглаживание
     hurstCurve->attach( h_plot ); // отобразить кривую на графике
 
     hurstCurve2 = new QwtPlotCurve();
     //hurstCurve->setTitle( "Hurst" + paragraphsList->currentItem()->text() );
-    hurstCurve2->setPen( Qt::red, 0 ); // цвет и толщина кривой
+    hurstCurve2->setPen( *curvColor , 0 ); // цвет и толщина кривой
     hurstCurve2->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // сглаживание
     hurstCurve2->attach( h_plot2 ); // отобразить кривую на графике
 
     dataCurve = new QwtPlotCurve();
     dataCurve->setTitle( paragraphsList->currentItem()->text() );
-    dataCurve->setPen( Qt::blue, 0 ); // цвет и толщина кривой
+    dataCurve->setPen( *curvColor, 0 ); // цвет и толщина кривой
     dataCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // сглаживание
 
     dataCurve->attach( d_plot ); // отобразить кривую на графике
@@ -167,6 +179,14 @@ void MainWindow::dynamicH()
     control->setHurstPeriod(hurstPeriod->text().toInt());
     control->setHurstWindow(hurstWindow->text().toInt());
     control->dynamicHurst(column);
+    stopDynamicHurst->setEnabled(true);
+
+}
+
+void MainWindow::stopDynamicHurstTriggered(){
+    stopDynamicHurst->setEnabled(false);
+    dynamicHurst->setEnabled(true);
+
 }
 
 void MainWindow::dataUpdate(double h)
@@ -249,11 +269,21 @@ void MainWindow::createActions()
 
     runHurst = new QAction(QIcon(":/images/calc.png"),tr("&Run Hurst"), this);
     runHurst->setStatusTip(tr("Run Hurst calculating."));
+    runHurst->setEnabled(false);
     connect(runHurst, SIGNAL(triggered()), this, SLOT(runH()));
 
-    dynamicHurst = new QAction(QIcon(":/images/play.png"),tr("&Run dinamic Hurst"), this);
+    dynamicHurst = new QAction(QIcon(":/images/play.png"),tr("Run &dinamic Hurst"), this);
     dynamicHurst->setStatusTip(tr("Run dynamic Hurst."));
+    dynamicHurst->setEnabled(false);
+    //dynamicHurst->setCheckable(true);
     connect(dynamicHurst, SIGNAL(triggered()), this, SLOT(dynamicH()));
+
+    stopDynamicHurst = new QAction(QIcon(":/images/stopbutton.png"),tr("&Stop dinamic Hurst"), this);
+    stopDynamicHurst->setStatusTip(tr("Run dynamic Hurst."));
+    //stopDynamicHurst->setCheckable(true);
+    stopDynamicHurst->setEnabled(false);
+    connect(stopDynamicHurst, SIGNAL(triggered()), control, SLOT(stopDynamicHurst()));
+    connect(stopDynamicHurst, SIGNAL(triggered()),this, SLOT(stopDynamicHurstTriggered()));
 }
 
 void MainWindow::createMenus(){
@@ -267,6 +297,7 @@ void MainWindow::createMenus(){
     editMenu = menuBar()->addMenu(tr("&Calculating"));
     editMenu->addAction(runHurst);
     editMenu->addAction(dynamicHurst);
+    editMenu->addAction(stopDynamicHurst);
     viewMenu = menuBar()->addMenu(tr("&View"));
     menuBar()->addSeparator();
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -279,9 +310,13 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(newLetterAct);
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(printAct);
-    fileToolBar->addAction(runHurst);
-    fileToolBar->addAction(dynamicHurst);
-    editToolBar = addToolBar(tr("Edit"));
+
+    editToolBar = addToolBar(tr("Hurst"));
+    editToolBar->setFloatable(true);
+    editToolBar->addAction(dynamicHurst);
+    editToolBar->addAction(stopDynamicHurst);
+    editToolBar->addAction(runHurst);
+
 }
 
 void MainWindow::createStatusBar()
