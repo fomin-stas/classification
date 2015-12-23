@@ -28,6 +28,8 @@ QList<double> ReadData::getColumnData(int n)
         if (cellData == 0.0) continue;
         _data.append(cellData);
     }
+    MathOperations MO;
+    MO.linearNormalization(&_data);
     return _data;
 }
 
@@ -51,7 +53,7 @@ void ReadData::startReadData(){
         return;
     }
     ReadThread * RT = new ReadThread(fileName_csv);
-    qRegisterMetaType<QList<QStringList>>("QList<QStringList>");
+    qRegisterMetaType<QList<QStringList> >("QList<QStringList>");
     connect(RT,SIGNAL(finishReadCSV(QList<QStringList>)),this,SLOT(ticksGenerator(QList<QStringList>)));
     RT->start();
 }

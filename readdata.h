@@ -6,6 +6,7 @@
 #include "tickdata.h"
 #include "readthread.h"
 #include "csvreader.h"
+#include "mathoperations.h"
 
 class ReadData : public QObject
 {

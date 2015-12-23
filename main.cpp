@@ -48,6 +48,6 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/images/icon.ico"));
     Q_INIT_RESOURCE(classification);
     MainWindow mainWin;
-    mainWin.show();
+    mainWin.showMaximized();
     return app.exec();
 }
