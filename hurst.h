@@ -12,8 +12,9 @@ public:
     explicit Hurst(QList<double> *timeSeries, QObject *parent = 0);
     explicit Hurst(QObject *parent = 0);
     void calculate();
-
+    void calculate(double *hurst);
     void calculateHurst(QList<double> timeSeries);
+
 signals:
     void hurstReady(double hurst);
 

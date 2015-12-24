@@ -41,7 +41,7 @@ signals:
 public slots:
     void setFileName(QString fileName);
     void setHeader(QStringList header_csv);
-    void calculateHurst(int column);
+    void calculateHurst(QList<int> columns);
     void setHeader();
     QList<double> getRSn();
     QList<double> getnList();

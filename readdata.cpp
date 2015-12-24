@@ -29,7 +29,7 @@ QList<double> ReadData::getColumnData(int n)
         _data.append(cellData);
     }
     MathOperations MO;
-    MO.linearNormalization(&_data);
+   // MO.linearNormalization(&_data);
     return _data;
 }
 

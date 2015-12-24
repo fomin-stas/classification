@@ -124,8 +124,13 @@ void MainWindow::undo()
 
 void MainWindow::addHeaderData()
 {
-    paragraphsList->addItems(control->headerData());
-    topicColumn->addItems(control->headerData());
+    QStringList headerData = control->headerData();
+    for(int i = 0; i< headerData.size(); i++){
+        QString str = headerData.at(i);
+        headerData.replace(i,str.toLocal8Bit());
+    }
+    paragraphsList->addItems(headerData);
+    topicColumn->addItems(headerData);
     paragraphsList->setCurrentRow(0);
     dynamicHurst->setEnabled(true);
     runHurst->setEnabled(true);
@@ -133,8 +138,12 @@ void MainWindow::addHeaderData()
 
 void MainWindow::runH()
 {
-    int column = paragraphsList->currentRow();
-    control->calculateHurst(column);
+    QList<QListWidgetItem*> columns = paragraphsList->selectedItems();
+    QList<int> rows;
+    for(int i=0; i< columns.size(); i++){
+        rows.append(paragraphsList->row(columns.at(i)));
+    }
+    control->calculateHurst(rows);
 }
 
 void MainWindow::dynamicH()
@@ -146,7 +155,7 @@ void MainWindow::dynamicH()
     hurstPoints.clear();
     hurstPoints2.clear();
     hurstCurve = new QwtPlotCurve();
-    //hurstCurve->setTitle( "Hurst" + paragraphsList->currentItem()->text() );
+
     int c = 255 / (paragraphsList->count()+1);
     int del = paragraphsList->currentRow()%2 == 0?2:1;
     int del2 = paragraphsList->currentRow()%3 == 0?2:1;
@@ -160,7 +169,6 @@ void MainWindow::dynamicH()
     hurstCurve->attach( h_plot ); // отобразить кривую на графике
 
     hurstCurve2 = new QwtPlotCurve();
-    //hurstCurve->setTitle( "Hurst" + paragraphsList->currentItem()->text() );
     hurstCurve2->setPen( *curvColor , 0 ); // цвет и толщина кривой
     hurstCurve2->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // сглаживание
     hurstCurve2->attach( h_plot2 ); // отобразить кривую на графике
@@ -174,8 +182,9 @@ void MainWindow::dynamicH()
 
     int column = paragraphsList->currentRow();
     control->setWithTopic(withTopic->isChecked());
-    if(withTopic->isChecked())
+    if(withTopic->isChecked()){
         control->setTopicColumn(topicColumn->currentIndex());
+    }
     control->setHurstPeriod(hurstPeriod->text().toInt());
     control->setHurstWindow(hurstWindow->text().toInt());
     control->dynamicHurst(column);
@@ -327,7 +336,6 @@ void MainWindow::createStatusBar()
 void MainWindow::createDockWindows()
 {
     QDockWidget *dock = new QDockWidget(tr("Hurst"), this);
-
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     QVBoxLayout *gl = new QVBoxLayout();
     QFormLayout *fl = new QFormLayout();
@@ -350,7 +358,6 @@ void MainWindow::createDockWindows()
     fl->addRow("With topic", withTopic);
     fl->addRow("Topic column", topicColumn);
 
-
     gl->addLayout(fl);
     dWidget->setLayout(gl);
     dock->setWidget(dWidget);
@@ -359,6 +366,7 @@ void MainWindow::createDockWindows()
 
     dock = new QDockWidget(tr("Header data"), this);
     paragraphsList = new QListWidget(dock);
+    paragraphsList->setSelectionMode(QAbstractItemView::MultiSelection);
     dock->setWidget(paragraphsList);
     addDockWidget(Qt::RightDockWidgetArea, dock);
     viewMenu->addAction(dock->toggleViewAction());
@@ -378,7 +386,6 @@ void MainWindow::createDockWindows()
     dock->setWidget(h_plot2);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
     viewMenu->addAction(dock->toggleViewAction());
-
     viewMenu->addAction(dock->toggleViewAction());
 }
 

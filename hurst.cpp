@@ -57,6 +57,25 @@ void Hurst::calculate()
     emit hurstReady(H);
 }
 
+void Hurst::calculate(double *hurst)
+{
+    QList<double> RSn;
+    while(genNEXTn()){                  //Разделим ряд Nt на A смежных периодов длиной n
+        QList<double> Ea = EaCall();        //Определим для каждого периода среднее значение
+        QList<double> Xka = XkaCall(&Ea);   //Рассчитаем отклонения от среднего значения для каждого периода
+        QList<double> Ria = RiaCall(&Xka);  //Рассчитаем размах в пределах каждого периода
+        QList<double> Si = SiCall(&Ea);     //Рассчитаем стандартное отклонения для каждого периода
+        double lnRS = qLn(RSnCall(&Ria,&Si));
+        if(!qIsNaN(lnRS) && !qIsInf(lnRS)){
+            RSn.append(lnRS);      //Рассчитываем среднее значение R/S
+            nList.append(qLn(n));
+        }
+    }
+    RSnList = RSn;
+    double H=TSQR(&RSn);
+    *hurst = H;
+}
+
 QList<double> Hurst::getRSn()
 {
     return RSnList;

@@ -28,12 +28,17 @@ void Controller::setHeader(QStringList header_csv)
     _headerData = header_csv;
 }
 
-void Controller::calculateHurst(int column)
+void Controller::calculateHurst(QList<int> columns)
 {
-    QList<double> columnData =  RD->getColumnData(column);
-    hurst = new Hurst(&columnData);
-    connect(hurst,SIGNAL(hurstReady(double)),this,SIGNAL(hurstReady(double)));
-    hurst->calculate();
+    double summHurst=0.0;
+    for(int i=0; i < columns.size(); i++){
+        QList<double> columnData =  RD->getColumnData(columns.at(i));
+        hurst = new Hurst(&columnData);
+        double H;
+        hurst->calculate(&H);
+        summHurst+=H;
+    }
+    emit hurstReady(summHurst / columns.size());
 }
 
 void Controller::dynamicHurst(int column)

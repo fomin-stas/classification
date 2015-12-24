@@ -14,7 +14,7 @@ void MathOperations::linearNormalization(QList<double> *list)
         if (list->at(i) < min)
             min = list->at(i);
         if (list->at(i) > max)
-            max = list->at(1);
+            max = list->at(i);
     }
     for(int i=0; i<listSize; i++){
         double xNorm = (list->at(i) - min)/(max-min);
