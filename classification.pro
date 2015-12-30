@@ -21,7 +21,8 @@ HEADERS         = mainwindow.h \
     readthread.h \
     tickdata.h \
     renderarea.h \
-    mathoperations.h
+    mathoperations.h \
+    entropy.h
 
 SOURCES         = main.cpp \
     mainwindow.cpp \
@@ -32,7 +33,8 @@ SOURCES         = main.cpp \
     readthread.cpp \
     tickdata.cpp \
     renderarea.cpp \
-    mathoperations.cpp
+    mathoperations.cpp \
+    entropy.cpp
 
 RESOURCES       = classification.qrc
 

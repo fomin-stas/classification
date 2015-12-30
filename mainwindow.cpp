@@ -52,7 +52,11 @@ MainWindow::MainWindow()
 {
     createCentralPlot();
     this->setWindowIcon(QIcon(":/images/icon.ico"));
-    setCentralWidget(d_plot);
+    centralTabWidget = new QTabWidget(this);
+    centralTabWidget->addTab(d_plot,"Текущие показатели");
+    createEntropyWidget();
+    centralTabWidget->addTab(entropyWidget, "Энтропийный подход");
+    setCentralWidget(centralTabWidget);
     control = new Controller();
     connect(control,SIGNAL(dataReady()),this,SLOT(addHeaderData()));
     connect(control,SIGNAL(hurstReady(double)),this,SLOT(dataUpdate(double)));
@@ -64,7 +68,7 @@ MainWindow::MainWindow()
     createToolBars();
     createStatusBar();
     createDockWindows();
-    setWindowTitle(tr("Classification by Hurst"));
+    setWindowTitle(tr("Классификация по Хёрсту"));
 }
 
 void MainWindow::newLetter()
@@ -476,6 +480,14 @@ void MainWindow::createDockPlot2()
     magnifier->setMouseButton(Qt::MidButton);
     QwtPlotPanner *d_panner = new QwtPlotPanner( h_plot2->canvas() );
     d_panner->setMouseButton(Qt::RightButton);
+}
+
+void MainWindow::createEntropyWidget()
+{
+    entropyWidget = new QWidget();
+    QGridLayout *entropyGrid = new QGridLayout();
+    QLabel *labelN = new QLabel("Размерность");
+    entropyGrid->addWidget(labelN,0,0);
 }
 
 int MainWindow::getTopicColumn() const

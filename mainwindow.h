@@ -118,6 +118,7 @@ private:
     void createCentralPlot();
     void createDockPlot();
     void createDockPlot2();
+    void createEntropyWidget();
     Controller *control;
     QwtPlot *d_plot;
     QwtPlot *h_plot;
@@ -136,6 +137,8 @@ private:
     QSpinBox *hurstPeriod;
     QComboBox *topicColumn;
     QCheckBox *withTopic;
+    QTabWidget *centralTabWidget;
+    QWidget *entropyWidget;
 
 
 

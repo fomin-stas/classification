@@ -1,31 +1,15 @@
-#include "mathoperations.h"
+#include "entropy.h"
 
-MathOperations::MathOperations(QObject *parent) : QObject(parent)
+Entropy::Entropy(QObject *parent) : QObject(parent)
 {
 
 }
 
-void MathOperations::linearNormalization(QList<double> *list)
-{
-    int listSize = list->size();
-    double min = list->at(0);
-    double  max = list->at(0);
-    for(int i=1; i<listSize; i++){
-        if (list->at(i) < min)
-            min = list->at(i);
-        if (list->at(i) > max)
-            max = list->at(i);
-    }
-    for(int i=0; i<listSize; i++){
-        double xNorm = (list->at(i) - min)/(max-min);
-        list->replace(i,xNorm);
-    }
-}
 
-double MathOperations::spearmanRC(QList<double> *X, QList<double> *Y)
+double Entropy::spearmanRC(QList<double> *X, QList<double> *Y)
 {
     if(X->size() != Y->size()){
-        return -2.0;
+        return -2.0;                    //intering data error of size  
     }
     QList<double> sortX;
     QList<double> sortY;
@@ -35,10 +19,10 @@ double MathOperations::spearmanRC(QList<double> *X, QList<double> *Y)
     QList<double> bindingY = *Y;
     qSort(sortX.begin(),sortX.end());
     qSort(sortY.begin(),sortY.end());
-    QList<int> uX;
-    QList<int> uY;
-    QMap<double, double> RX;
-    QMap<double, double> RY;
+    QList<int> uX;                      //lusts of bindings
+    QList<int> uY;                      //
+    QMap<double, double> RX;            //lists of rungs
+    QMap<double, double> RY;            //
     double rang = 1.0;
     double n = X->size();
     while(!sortX.isEmpty()){
@@ -84,7 +68,7 @@ double MathOperations::spearmanRC(QList<double> *X, QList<double> *Y)
     return 0.0;
 }
 
-void MathOperations::spearmanRCuf(QList<double> binding, QList<int> *u){
+void Entropy::spearmanRCuf(QList<double> binding, QList<int> *u){
     while(!binding.isEmpty()){
         double val = binding.first();
         int count = binding.removeAll(val);
