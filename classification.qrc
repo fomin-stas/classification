@@ -8,5 +8,6 @@
         <file>images/icon.ico</file>
         <file>images/calc.png</file>
         <file>images/stopbutton.png</file>
+        <file>images/h.png</file>
     </qresource>
 </RCC>
