@@ -59,6 +59,8 @@ private:
     Hurst * dHurst2;
     QList<double> dynamicData;
     QList<double> topicData;
+
+
     double topic;
     int topicStart;
     int countRow;
@@ -68,6 +70,7 @@ private:
     int currentPeriod;
     bool withTopic;
     int topicColumn;
+
 
 };
 

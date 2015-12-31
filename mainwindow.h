@@ -165,6 +165,11 @@ private:
     int topic;
     QColor *curvColor;
 
+    QMap<double, double> storyHurst;
+    QMap<int, double> storyTopicHurst;
+    QMap<double, double> storyData;
+
+
 };
 //! [0]
 

@@ -22,7 +22,8 @@ HEADERS         = mainwindow.h \
     tickdata.h \
     renderarea.h \
     mathoperations.h \
-    entropy.h
+    entropy.h \
+    entropy_form.h
 
 SOURCES         = main.cpp \
     mainwindow.cpp \
@@ -34,7 +35,8 @@ SOURCES         = main.cpp \
     tickdata.cpp \
     renderarea.cpp \
     mathoperations.cpp \
-    entropy.cpp
+    entropy.cpp \
+    entropy_form.cpp
 
 RESOURCES       = classification.qrc
 
@@ -42,3 +44,6 @@ RESOURCES       = classification.qrc
 target.path = ./build
 
 INSTALLS += target
+
+FORMS += \
+    entropy_form.ui

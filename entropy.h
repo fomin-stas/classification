@@ -2,6 +2,7 @@
 #define ENTROPY_H
 
 #include <QObject>
+#include <QMap>
 
 class Entropy : public QObject
 {

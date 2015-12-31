@@ -102,7 +102,7 @@ void MainWindow::save()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Choose a file name"), ".",
-                                                    tr("HTML (*.html *.htm)"));
+                                                    tr("CSV (*.csv)"));
     if (fileName.isEmpty())
         return;
     QFile file(fileName);
@@ -114,9 +114,17 @@ void MainWindow::save()
         return;
     }
     QTextStream out(&file);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    out << textEdit->toHtml();
-    QApplication::restoreOverrideCursor();
+    out << "Time tics ; Hurst" << endl;
+    for(int i=0; i< hurstPoints.size();i++){
+        out << QString::number(hurstPoints.at(i).x()) << ";" << QString::number(hurstPoints.at(i).y()) << endl;
+    }
+    out << " ; " << endl;
+    out << " ; " << endl;
+    out << "Topic number ; Hurst" << endl;
+    for(int i=0; i< hurstPoints2.size();i++){
+        out << QString::number(hurstPoints2.at(i).x()) << ";" << QString::number(hurstPoints2.at(i).y()) << endl;
+    }
+    file.close();
     statusBar()->showMessage(tr("Saved '%1'").arg(fileName), 2000);
 }
 
@@ -150,11 +158,11 @@ void MainWindow::runH()
     control->calculateHurst(rows);
 }
 
-void MainWindow::dynamicH()
-{
+void MainWindow::dynamicH(){
     dynamicHurst->setEnabled(false);
     timer = 0.0;
     topic = 0;
+
     dataPoints.clear();
     hurstPoints.clear();
     hurstPoints2.clear();
@@ -164,7 +172,7 @@ void MainWindow::dynamicH()
     int del = paragraphsList->currentRow()%2 == 0?2:1;
     int del2 = paragraphsList->currentRow()%3 == 0?2:1;
     int del3 = paragraphsList->currentRow()%4 == 0?2:1;
-    int r = (c * paragraphsList->currentRow())/(del * del2) ;
+    int r = (c * paragraphsList->currentRow())/(del * del2);
     int g = (255 - (c * paragraphsList->currentRow()))/del3;
     int b = qAbs((c * paragraphsList->currentRow() * 2) - 255);
     curvColor = new QColor(r,g,b);
@@ -227,6 +235,9 @@ void MainWindow::newData(double data)
     dataCurve->setSamples(dataPoints);
     //dataCurve->attach( d_plot );
     d_plot->replot();
+    QMap<double, double> storyHurst;
+    QMap<int, double> storyTopicHurst;
+    QMap<double, double> storyData;
 }
 
 void MainWindow::newHurst(double data)
