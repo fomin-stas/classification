@@ -55,7 +55,7 @@ MainWindow::MainWindow()
     centralTabWidget = new QTabWidget(this);
     centralTabWidget->addTab(d_plot,"Текущие показатели");
     createEntropyWidget();
-    centralTabWidget->addTab(entropyWidget, "Энтропийный подход");
+
     setCentralWidget(centralTabWidget);
     control = new Controller();
     connect(control,SIGNAL(dataReady()),this,SLOT(addHeaderData()));
@@ -68,7 +68,8 @@ MainWindow::MainWindow()
     createToolBars();
     createStatusBar();
     createDockWindows();
-    setWindowTitle(tr("Классификация по Хёрсту"));
+    centralTabWidget->addTab(h_plot2, "Энтропийный подход");
+    setWindowTitle(tr("Классификация"));
 }
 
 void MainWindow::newLetter()
@@ -474,12 +475,12 @@ void MainWindow::createDockPlot()
 void MainWindow::createDockPlot2()
 {
     h_plot2 = new QwtPlot();
-    h_plot2->setTitle( "Hurst by topic" );
+    h_plot2->setTitle( "Расчет энтропи на основе показателя кореляции Спирмена" );
     h_plot2->setCanvasBackground( Qt::white );
     h_plot2->setAxisScale(QwtPlot::xBottom, 0, 25);
     h_plot2->setAxisScale(QwtPlot::yLeft, 0, 1);
-    h_plot2->setAxisTitle(QwtPlot::yLeft, "Hurst");
-    h_plot2->setAxisTitle(QwtPlot::xBottom, "Number of topic");
+    h_plot2->setAxisTitle(QwtPlot::yLeft, "Энтропия");
+    h_plot2->setAxisTitle(QwtPlot::xBottom, "Номер измерения");
     h_plot2->insertLegend( new QwtLegend() );
     h_plot2->setAxisAutoScale(0,true);
     h_plot2->setAxisAutoScale(1,true);
